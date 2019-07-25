@@ -112,29 +112,38 @@ class Scraper:
         }
 
     def scrap_snapdeal(self, html_response):
+        # get product image
         try:
-            for ele in html_response.select('div.normalText'):
-                ele.decompose()
+            img_container = html_response.select_one('ul#bx-slider-left-image-panel')
+            product_image = img_container.select('img.cloudzoom')[0]['src']
+        except:
+            product_image = 'NA'
+        # get actual price
+        try:
             self.actual_price = html_response.select_one(
-                'div.pdpCutPrice ').get_text().strip()
-            print(self.actual_price.get_text().strip())
+                'div.pdpCutPrice').get_text().strip()
+            self.actual_price = float(self.actual_price[9:15].replace(',', ''))
         except AttributeError as error:
-            print(error)
-            print('Actual price not available')
+            self.actual_price = 'NA'
+        # get current price
         try:
             for sub_div in html_response.select('span.pdp-final-price'):
                 self.current_price = sub_div.find(
-                    'span', {'class': 'payBlkBig'}).get_text()
-            print(self.current_price.strip())
+                    'span', {'class': 'payBlkBig'}).get_text().strip()
+                self.current_price = float(self.current_price)
         except AttributeError as error:
-            print('Current price not available')
-        if self.current_price != None:
-            return {
-                'actual_price': self.actual_price,
-                'current_price': self.current_price
-            }
-        else:
-            return 'Something went wrong'
+            self.current_price = 'NA'
+        if self.actual_price == 'NA' and self.current_price != 'NA':
+            self.actual_price = self.current_price
+        elif self.actual_price != 'NA' and self.current_price == 'NA':
+            self.current_price = self.actual_price
+        discount = math.floor(((self.actual_price - self.current_price)/self.actual_price) * 100)
+        return {
+            'product_image': product_image,
+            'actual_price': self.actual_price,
+            'current_price': self.current_price,
+            'discount': discount
+        }
 
 
 if __name__ == '__main__':
