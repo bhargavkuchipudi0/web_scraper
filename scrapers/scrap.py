@@ -43,6 +43,11 @@ class Scraper:
             product_image = list(json.loads(product_image).keys())[0]
         except:
             product_image = 'NA'
+        # get product name
+        try:
+            product_name = html_response.select_one('span#productTitle').get_text().strip()
+        except:
+            product_name = 'NA'
         # get actual price
         try:
             self.actual_price = html_response.select_one(
@@ -51,6 +56,7 @@ class Scraper:
                 '₹', '').replace(',', '').replace('$', ''))
         except AttributeError as error:
             self.actual_price = 'NA'
+        print(self.actual_price)
         # get current price
         try:
             self.current_price = html_response.select_one(
@@ -77,6 +83,7 @@ class Scraper:
             ((self.actual_price - self.current_price) / self.actual_price) * 100)
         return {
             'product_image': product_image,
+            'product_name': product_name,
             'actual_price': self.actual_price,
             'current_price': self.current_price,
             'discount': discount
@@ -85,6 +92,11 @@ class Scraper:
     def scrap_flipkart(self, html_response):
         # get produc image
         product_image = 'https://www.wileyindia.com/pub/static/frontend/Magento/luma/en_US/images/Flipkart.jpg'
+        # get product image
+        try:
+            product_name = html_response.select_one('span._35KyD6').get_text().strip()
+        except:
+            product_name = 'NA'
         # get actual price
         try:
             self.actual_price = html_response.select_one(
@@ -106,6 +118,7 @@ class Scraper:
         discount = math.floor(((self.actual_price - self.current_price)/self.actual_price) * 100)
         return {
             'product_image': product_image,
+            'product_name': product_name,
             'actual_price': self.actual_price,
             'current_price': self.current_price,
             'discount': discount
@@ -118,6 +131,11 @@ class Scraper:
             product_image = img_container.select('img.cloudzoom')[0]['src']
         except:
             product_image = 'NA'
+        # get product name
+        try:
+            product_name = html_response.select_one('h1.pdp-e-i-head').get_text().strip()
+        except:
+            product_name = 'NA'
         # get actual price
         try:
             self.actual_price = html_response.select_one(
@@ -140,6 +158,7 @@ class Scraper:
         discount = math.floor(((self.actual_price - self.current_price)/self.actual_price) * 100)
         return {
             'product_image': product_image,
+            'product_name': product_name,
             'actual_price': self.actual_price,
             'current_price': self.current_price,
             'discount': discount

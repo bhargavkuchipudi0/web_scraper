@@ -12,8 +12,9 @@ class Tasks(Document):
     user_id = StringField(required=True)
     url = StringField(required=True)
     product_image = StringField(default='not_available')
-    actual_price = IntField(default='not_available')
-    current_price = IntField(default='not_available')
-    discount = IntField(default=0)
+    product_name = StringField(required=True)
+    actual_price = IntField(required=True, default='not_available')
+    current_price = IntField(required=True, default='not_available')
+    discount = IntField(required=True, default=0)
     updated_on = DateTimeField(default=datetime.datetime.now)
     

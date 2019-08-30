@@ -9,7 +9,12 @@ directory_path = os.getcwd()
 path_to_cron_file = directory_path.split('/')[1: -1]
 path_to_cron_file = 'python3' + '/' + '/'.join(path_to_cron_file) + '/scrapers/cron.py'
 
+# To remove all the cron jobs
+def remove_all_cron_jobs():
+    cron_tab.remove_all()
+    cron_tab.write()
 
+# To start a cron job if not started
 def start_cron_job():
     if len(cron_tab) < 1:
         job = cron_tab.new(
@@ -34,5 +39,5 @@ def sys_ip():
 
 if __name__ == '__main__':
     print('Server started on port 3500')
-    start_cron_job()
+    # start_cron_job()
     app.run(port=3500, debug=True, use_reloader=False)
